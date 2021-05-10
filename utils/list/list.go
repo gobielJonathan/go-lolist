@@ -9,7 +9,7 @@ type List struct {
 	data []interface{}
 }
 
-func (d *List) ToGeneric(data ...interface{}) []interface{} {
+func ToGeneric(data ...interface{}) []interface{} {
 	return data
 }
 
@@ -17,11 +17,11 @@ func (d *List) Gets() []interface{} {
 	return d.data
 }
 
-func (d *List) Length() int {
+func (d List) Length() int {
 	return len(d.data)
 }
 
-func (d *List) Capacity() int {
+func (d List) Capacity() int {
 	return cap(d.data)
 }
 
@@ -122,6 +122,36 @@ func (d List) FindLastIndex(callback func(s interface{}) bool) int {
 		}
 	}
 	return -1
+}
+
+func (d List) Every(callback func(s interface{}) bool) bool {
+	var isTrue = true
+	for _, d := range d.data {
+		isTrue = isTrue && callback(d)
+	}
+	return isTrue
+}
+
+func (d List) Some(callback func(s interface{}) bool) bool {
+	var isTrue = false
+	for _, d := range d.data {
+		isTrue = isTrue || callback(d)
+	}
+	return isTrue
+}
+
+func (d List) Take(len int) []interface{} {
+	if len > d.Length() {
+		return d.data
+	}
+	return d.data[0:len]
+}
+
+func (d List) TakeRight(len int) []interface{} {
+	if len > d.Length() {
+		return d.data
+	}
+	return d.data[:-len]
 }
 
 func (d List) ToDictionary(getKey func(s interface{}) string, getValue func(s interface{}) interface{}) map[string]interface{} {
