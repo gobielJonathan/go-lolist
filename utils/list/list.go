@@ -85,7 +85,7 @@ func (d *List) LastOrDefault() interface{} {
 	if d.data == nil {
 		return nil
 	}
-	return d.data[d.Length()-1]
+	return d.Last()
 }
 
 func (d List) Exists(callback func(s interface{}) bool) bool {
@@ -163,7 +163,7 @@ func (d List) ToDictionary(getKey func(s interface{}) string, getValue func(s in
 	return dict
 }
 
-func (d List) GroupBy(getKey func(s interface{}) interface{}) map[interface{}][]interface{} {
+func (d List) GroupByFindingValue(getKey func(s interface{}) interface{}) map[interface{}][]interface{} {
 	var dict = map[interface{}][]interface{}{}
 
 	for _, data := range d.data {
@@ -195,7 +195,26 @@ func (d List) GroupBy(getKey func(s interface{}) interface{}) map[interface{}][]
 				}
 			}
 		}
-
 	}
 	return dict
+}
+
+func (d List) GroupBy(getKey func(s interface{}) interface{}) map[interface{}][]interface{} {
+	var dict = map[interface{}][]interface{}{}
+
+	for _, data := range d.data {
+		key := getKey(data)
+		dict[key] = append(dict[key], data)
+	}
+	return dict
+}
+
+func (d List) Filter(callback func(s interface{}) bool) []interface{} {
+	var newArray = []interface{}{}
+	for _, d := range d.data {
+		if callback(d) {
+			newArray = append(newArray, d)
+		}
+	}
+	return newArray
 }
